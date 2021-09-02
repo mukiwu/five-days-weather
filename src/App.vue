@@ -8,7 +8,26 @@
 
 export default {
   name: 'App',
-  
+  data() {
+    return {
+      weather: []
+    }
+  },
+  created: function() {
+    this.getData()
+  },
+  methods: {
+    getData() {
+      const vm = this
+      const api = '/api/location/search/?query=san';
+
+      vm.$http.get(api).then(response => {
+        vm.AQIdata = response.data
+        console.log(vm.AQIdata)
+      });
+    },
+  }
+
 }
 </script>
 
