@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     {{ city }}
+    {{ todayWeather.weather_state_name }}
   </div>
 </template>
 
@@ -12,7 +13,8 @@ export default {
     return {
       city: '',
       woeid: '',
-      weather: []
+      todayWeather: [],
+      fiveWeather: []
     }
   },
   created: function() {
@@ -50,14 +52,25 @@ export default {
       }
     },
     showLocation(latt, long) {
-      const vm = this
-      const api = '/api/location/search/?lattlong=' + latt + ',' + long
+      const vm = this,
+            api = '/api/location/search/?lattlong=' + latt + ',' + long
       vm.$http.get(api).then(res => {
         this.city = res.data[0].title
         this.woeid = res.data[0].woeid
-        console.log(res.data[0])
+        // console.log(res.data[0])
+        if(this.woeid) {
+          vm.showLocationWeather(this.woeid)
+        }
       });
     },
+    showLocationWeather(woeid) {
+      const vm = this,
+            api = '/api/location/' + woeid + '/'
+      vm.$http.get(api).then(res => {
+        this.todayWeather = res.data.consolidated_weather[0]
+        console.log(this.todayWeather)
+      })
+    }
   }
 
 }
