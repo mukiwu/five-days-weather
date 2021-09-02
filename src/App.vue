@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :class=todayWeather.weather_state_abbr>
     {{ city }}
     {{ todayWeather.weather_state_name }}
   </div>
@@ -57,7 +57,6 @@ export default {
       vm.$http.get(api).then(res => {
         this.city = res.data[0].title
         this.woeid = res.data[0].woeid
-        // console.log(res.data[0])
         if(this.woeid) {
           vm.showLocationWeather(this.woeid)
         }
@@ -68,7 +67,8 @@ export default {
             api = '/api/location/' + woeid + '/'
       vm.$http.get(api).then(res => {
         this.todayWeather = res.data.consolidated_weather[0]
-        console.log(this.todayWeather)
+        console.log(res.data)
+        // console.log(this.todayWeather)
       })
     }
   }
@@ -77,12 +77,22 @@ export default {
 </script>
 
 <style>
+body {
+  margin: 0;
+  padding: 0;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  width: 100%;
+  height: 100vh;
+}
+
+.s {
+  background: url('/weather/s.jpg') 0 0;
 }
 </style>
