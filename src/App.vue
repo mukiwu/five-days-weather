@@ -1,7 +1,7 @@
 <template>
   <div id="app" :class=todayWeather.weather_state_abbr>
-    {{ city }}
-    {{ todayWeather.weather_state_name }}
+    <h1>{{ city }} / {{ todayWeather.the_temp}}</h1>
+    <h2>{{ todayWeather.weather_state_name }}</h2>
   </div>
 </template>
 
@@ -67,8 +67,8 @@ export default {
             api = '/api/location/' + woeid + '/'
       vm.$http.get(api).then(res => {
         this.todayWeather = res.data.consolidated_weather[0]
-        console.log(res.data)
-        // console.log(this.todayWeather)
+        // console.log(res.data)
+        console.log(this.todayWeather)
       })
     }
   }
@@ -86,13 +86,29 @@ body {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  font-size: 16px;
   color: #2c3e50;
   width: 100%;
   height: 100vh;
 }
 
-.s {
-  background: url('/weather/s.jpg') 0 0;
+.s { background: url('/weather/s.jpg') 0 0;}
+.lr { background: url('/weather/lr.jpg') 0 0;}
+.hr { background: url('/weather/hr.jpg') 0 0;}
+
+h1 {
+  margin: 0;
+  padding: 4rem 0 0 4rem;
+  font-size: 7em;
+  color: #fff;
+  font-weight: 300;
+}
+
+h2 {
+  background: #333;
+  color: #fff;
+  margin: 0 0 0 4rem;
+  display: inline-block;
+  padding: .5rem;
 }
 </style>
