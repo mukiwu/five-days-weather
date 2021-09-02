@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
+    {{ city }}
   </div>
 </template>
 
@@ -10,20 +10,52 @@ export default {
   name: 'App',
   data() {
     return {
+      city: '',
+      woeid: '',
       weather: []
     }
   },
   created: function() {
-    this.getData()
+    this.getLocation()
   },
   methods: {
-    getData() {
+    getLocation() {
+      if (navigator.geolocation) {
+        const vm = this
+        // HTML5 定位抓取
+        navigator.geolocation.getCurrentPosition(function (position) {
+          // console.log(position.coords.latitude, position.coords.longitude)
+          let latt = position.coords.latitude,
+              long = position.coords.longitude
+          vm.showLocation(latt, long)
+        },
+        function(error) {
+          switch (error.code) {
+            case error.TIMEOUT:
+              console.log('連線逾時')
+              break;
+            case error.POSITION_UNAVAILABLE:
+              console.log('無法取得定位')
+              break;
+            case error.PERMISSION_DENIED:
+              console.log('瀏覽器拒絕權限')
+              break;
+            case error.UNKNOWN_ERROR:
+              console.log('不明的錯誤，請稍候再試')
+              break;
+          }
+        });
+      } else {
+        console.log('不明的錯誤，請稍候再試')
+      }
+    },
+    showLocation(latt, long) {
       const vm = this
-      const api = '/api/location/search/?query=san';
-
-      vm.$http.get(api).then(response => {
-        vm.AQIdata = response.data
-        console.log(vm.AQIdata)
+      const api = '/api/location/search/?lattlong=' + latt + ',' + long
+      vm.$http.get(api).then(res => {
+        this.city = res.data[0].title
+        this.woeid = res.data[0].woeid
+        console.log(res.data[0])
       });
     },
   }
