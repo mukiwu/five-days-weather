@@ -5,6 +5,11 @@
         <h1>{{ city }} / {{ todayWeather.the_temp | degree}}</h1>
         <div class="m1"><h2><img :src="'https://www.metaweather.com/static/img/weather/'+ todayWeather.weather_state_abbr + '.svg'" width="24"> {{ todayWeather.weather_state_name }}</h2></div>
         <div class="m1"><h2>{{ todayWeather.min_temp | degree}} ~ {{ todayWeather.max_temp | degree}}</h2></div>
+        <div class="search">
+          <div class="title">↓ aonther city? type and hit enter!</div>
+          <input type="text" v-model="searchCityName" @keyup.enter="searchCity(searchCityName)">
+          <div class="state">{{ state }}</div>
+        </div>
       </div>
       <div class="align-bottom">
         <div class="card" v-for="item in fiveWeather.slice(1,6)" :key="item.id">
@@ -25,6 +30,8 @@ export default {
   name: 'App',
   data() {
     return {
+      searchCityName: '',
+      state: '',
       city: '',
       woeid: '',
       todayWeather: [],
@@ -38,9 +45,7 @@ export default {
     getLocation() {
       if (navigator.geolocation) {
         const vm = this
-        // HTML5 定位抓取
         navigator.geolocation.getCurrentPosition(function (position) {
-          // console.log(position.coords.latitude, position.coords.longitude)
           let latt = position.coords.latitude,
               long = position.coords.longitude
           vm.showLocation(latt, long)
@@ -60,7 +65,7 @@ export default {
               console.log('不明的錯誤，請稍候再試')
               break;
           }
-        });
+        })
       } else {
         console.log('不明的錯誤，請稍候再試')
       }
@@ -74,7 +79,7 @@ export default {
         if(this.woeid) {
           vm.showLocationWeather(this.woeid)
         }
-      });
+      })
     },
     showLocationWeather(woeid) {
       const vm = this,
@@ -82,9 +87,25 @@ export default {
       vm.$http.get(api).then(res => {
         this.todayWeather = res.data.consolidated_weather[0]
         this.fiveWeather = res.data.consolidated_weather
-        console.log(this.fiveWeather)
+        // console.log(this.fiveWeather)
         // console.log(this.todayWeather)
       })
+    },
+    searchCity(city) {
+      const vm = this,
+            api = '/api/location/search/?query=' + city
+      vm.$http.get(api).then(res => {
+        console.log(res.data)
+        if(res.data.length > 0) {
+          // console.log(res.data)
+          this.state="loading, please wait a moment..."
+          this.showLocationWeather(res.data[0].woeid)
+          this.city = res.data[0].title
+        } else {
+          this.state = 'no data, please search another city.'
+        }
+      })
+      this.searchCityName = ''
     }
   },
   filters: {
@@ -134,6 +155,8 @@ body {
 .s { background-image: url('/weather/s.jpg');}
 .lr { background-image: url('/weather/lr.jpg');}
 .hr { background-image: url('/weather/hr.jpg');}
+.lc { background-image: url('/weather/lc.jpg');}
+.hc { background-image: url('/weather/hc.jpg');}
 
 h1 {
   margin: 0;
@@ -181,5 +204,36 @@ ul.temp {
 .temp .min::after {
   content: "|";
   display: block;
+}
+
+.search {
+  margin-top: 2rem;
+}
+
+.search .title {
+  color: #fff;
+  font-size: .8rem;
+  font-style: italic;
+  text-shadow: 1px 1px 1px #000;
+}
+
+.search input {
+  background: none;
+  color: #fff;
+  font-weight: 300;
+  font-size: 1.5rem;
+  border: 0;
+  border-bottom: 2px solid #fff;
+}
+
+.search input:focus {
+  outline: none !important;
+  color: #333;
+  background: rgba(255, 255, 255, .8);
+}
+
+.search .state {
+  color: red;
+  font-size: .8rem;
 }
 </style>
