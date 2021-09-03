@@ -13,20 +13,35 @@
         </div>
       </div>
       <div class="align-bottom">
-        <div class="card" v-for="item in fiveWeather.slice(1,6)" :key="item.id">
-          <div class="date">{{ item.applicable_date }}</div>
-          <div class="state"><img :src="'https://www.metaweather.com/static/img/weather/'+ item.weather_state_abbr + '.svg'" width="36"><br />{{ item.weather_state_name }}</div>
-          <ul class="temp">
-            <li class="min">{{ item.min_temp | degree }}</li>
-            <li class="max">{{ item.max_temp | degree }}</li>
-          </ul>
-        </div>
+        <tabs>
+          <tab name="Forecast">
+            <div class="card" v-for="item in fiveWeather.slice(1,6)" :key="item.id">
+              <div class="date">{{ item.applicable_date }}</div>
+              <div class="state"><img :src="'https://www.metaweather.com/static/img/weather/'+ item.weather_state_abbr + '.svg'" width="36"><br />{{ item.weather_state_name }}</div>
+              <ul class="temp">
+                <li class="min">{{ item.min_temp | degree }}</li>
+                <li class="max">{{ item.max_temp | degree }}</li>
+              </ul>
+            </div>
+          </tab>
+          <tab name="Temp Chart" :selected="true">
+            <h1>Two tab</h1>
+          </tab>
+          <tab name="Humidity Chart">
+            <h1>Three tab</h1>
+          </tab>
+        </tabs>
+        
+        <!-- <div><a href="https://www.wallpaperflare.com/" target="_blank">圖片來源</a></div> -->
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import tabs from './components/tabs.vue'
+import tab from './components/tab.vue'
+
 export default {
   name: 'App',
   data() {
@@ -43,6 +58,10 @@ export default {
       },
       fiveWeather: []
     }
+  },
+  components: {
+    'tabs': tabs,
+    'tab': tab
   },
   created: function() {
     this.getLocation()
@@ -138,6 +157,10 @@ body {
   color: #2c3e50;
 }
 
+a {
+  color: #fff;
+}
+
 .loading {
   position: absolute;
   z-index: 999;
@@ -182,6 +205,7 @@ body {
 .hr { background-image: url('/weather/hr.jpg');}
 .lc { background-image: url('/weather/lc.jpg');}
 .hc { background-image: url('/weather/hc.jpg');}
+.c { background-image: url('/weather/c.jpg');}
 
 h1 {
   margin: 0;
@@ -204,7 +228,7 @@ h2 {
 }
 
 .card {
-  margin: 0 .5rem 8rem .5rem;
+  margin: 0 .5rem 0rem .5rem;
   padding: .5rem;
   background: rgba(255, 255, 255);
   border-radius: 10px;
