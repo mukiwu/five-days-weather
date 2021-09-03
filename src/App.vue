@@ -1,7 +1,8 @@
 <template>
   <div id="app" class="cover" :class=todayWeather.weather_state_abbr>
     <h1>{{ city }} / {{ todayWeather.the_temp | degree}}</h1>
-    <h2>{{ todayWeather.weather_state_name }}</h2>
+    <div class="m1"><h2><img :src="'https://www.metaweather.com/static/img/weather/'+ todayWeather.weather_state_abbr + '.svg'" width="24"> {{ todayWeather.weather_state_name }}</h2></div>
+    <div class="m1"><h2>{{ todayWeather.min_temp | degree}} ~ {{ todayWeather.max_temp | degree}}</h2></div>
   </div>
 </template>
 
@@ -72,6 +73,9 @@ export default {
       })
     }
   },
+  computed: {
+    
+  },
   filters: {
     degree: function(val) {
       return Math.round(val) + '°C'
@@ -120,5 +124,9 @@ h2 {
   margin: 0 0 0 4rem;
   display: inline-block;
   padding: .5rem;
+}
+
+.m1 {
+  margin-bottom: .5rem;
 }
 </style>
