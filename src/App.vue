@@ -1,13 +1,19 @@
 <template>
-  <div id="app" class="cover" :class=todayWeather.weather_state_abbr>
-    <h1>{{ city }} / {{ todayWeather.the_temp | degree}}</h1>
-    <div class="m1"><h2><img :src="'https://www.metaweather.com/static/img/weather/'+ todayWeather.weather_state_abbr + '.svg'" width="24"> {{ todayWeather.weather_state_name }}</h2></div>
-    <div class="m1"><h2>{{ todayWeather.min_temp | degree}} ~ {{ todayWeather.max_temp | degree}}</h2></div>
+  <div id="app">
+    <div class="container cover" :class=todayWeather.weather_state_abbr>
+      <div class="align-top">
+        <h1>{{ city }} / {{ todayWeather.the_temp | degree}}</h1>
+        <div class="m1"><h2><img :src="'https://www.metaweather.com/static/img/weather/'+ todayWeather.weather_state_abbr + '.svg'" width="24"> {{ todayWeather.weather_state_name }}</h2></div>
+        <div class="m1"><h2>{{ todayWeather.min_temp | degree}} ~ {{ todayWeather.max_temp | degree}}</h2></div>
+      </div>
+      <div class="align-bottom">
+        bottom
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-
 export default {
   name: 'App',
   data() {
@@ -97,8 +103,18 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-size: 16px;
   color: #2c3e50;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
   width: 100%;
   height: 100vh;
+}
+
+.align-bottom {
+  display: flex;
+  align-items: end;
 }
 
 .cover {
