@@ -1,6 +1,6 @@
 <template>
-  <div id="app" :class=todayWeather.weather_state_abbr>
-    <h1>{{ city }} / {{ todayWeather.the_temp}}</h1>
+  <div id="app" class="cover" :class=todayWeather.weather_state_abbr>
+    <h1>{{ city }} / {{ todayWeather.the_temp | degree}}</h1>
     <h2>{{ todayWeather.weather_state_name }}</h2>
   </div>
 </template>
@@ -71,6 +71,11 @@ export default {
         console.log(this.todayWeather)
       })
     }
+  },
+  filters: {
+    degree: function(val) {
+      return Math.round(val) + '°C'
+    }
   }
 
 }
@@ -92,9 +97,14 @@ body {
   height: 100vh;
 }
 
-.s { background: url('/weather/s.jpg') 0 0;}
-.lr { background: url('/weather/lr.jpg') 0 0;}
-.hr { background: url('/weather/hr.jpg') 0 0;}
+.cover {
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+.s { background-image: url('/weather/s.jpg');}
+.lr { background-image: url('/weather/lr.jpg');}
+.hr { background-image: url('/weather/hr.jpg');}
 
 h1 {
   margin: 0;
