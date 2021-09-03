@@ -2,36 +2,38 @@
   <div id="app">
     <div :class="{ loading: isLoading }"></div>
     <div class="container cover" :class=todayWeather.weather_state_abbr>
-      <div class="align-top">
-        <h1>{{ city }} / {{ todayWeather.the_temp | degree}}</h1>
-        <div class="m1"><h2><img :src="'https://www.metaweather.com/static/img/weather/'+ todayWeather.weather_state_abbr + '.svg'" width="24"> {{ todayWeather.weather_state_name }}</h2></div>
-        <div class="m1"><h2>{{ todayWeather.min_temp | degree}} ~ {{ todayWeather.max_temp | degree}}</h2></div>
-        <div class="search">
-          <div class="title">↓ aonther city? type and hit enter!</div>
-          <input type="text" v-model="searchCityName" @keyup.enter="searchCity(searchCityName)">
-          <div class="state">{{ state }}</div>
+      <h1>{{ city }} / {{ todayWeather.the_temp | degree}}</h1>
+      <div class="container-flex">
+        <div class="align-top">
+          <div class="m1"><h2><img :src="'https://www.metaweather.com/static/img/weather/'+ todayWeather.weather_state_abbr + '.svg'" width="24"> {{ todayWeather.weather_state_name }}</h2></div>
+          <div class="m1"><h2>{{ todayWeather.min_temp | degree}} ~ {{ todayWeather.max_temp | degree}}</h2></div>
+          <div class="search">
+            <div class="title">↓ aonther city? type and hit enter!</div>
+            <input type="text" v-model="searchCityName" @keyup.enter="searchCity(searchCityName)">
+            <div class="state">{{ state }}</div>
+          </div>
         </div>
-      </div>
-      <div class="align-bottom">
-        <tabs>
-          <tab name="Forecast" :selected="true">
-            <div class="card" v-for="item in fiveWeather.slice(1,6)" :key="item.id">
-              <div class="date">{{ item.applicable_date }}</div>
-              <div class="state"><img :src="'https://www.metaweather.com/static/img/weather/'+ item.weather_state_abbr + '.svg'" width="36"><br />{{ item.weather_state_name }}</div>
-              <ul class="temp">
-                <li class="min">{{ item.min_temp | degree }}</li>
-                <li class="max">{{ item.max_temp | degree }}</li>
-              </ul>
-            </div>
-          </tab>
-          <tab name="Temp Chart">
-            <bar-chart :yAxis = yAxis :fiveWeather = fiveWeather v-if="fiveWeather.length > 0"></bar-chart>
-          </tab>
-          <tab name="Humidity Chart">
-            <h1>Three tab</h1>
-          </tab>
-        </tabs>
-        <!-- <div><a href="https://www.wallpaperflare.com/" target="_blank">圖片來源</a></div> -->
+        <div class="align-bottom">
+          <tabs>
+            <tab name="Forecast" :selected="true">
+              <div class="card" v-for="item in fiveWeather.slice(1,6)" :key="item.id">
+                <div class="date">{{ item.applicable_date }}</div>
+                <div class="state"><img :src="'https://www.metaweather.com/static/img/weather/'+ item.weather_state_abbr + '.svg'" width="36"><br />{{ item.weather_state_name }}</div>
+                <ul class="temp">
+                  <li class="min">{{ item.min_temp | degree }}</li>
+                  <li class="max">{{ item.max_temp | degree }}</li>
+                </ul>
+              </div>
+            </tab>
+            <tab name="Temp Chart">
+              <bar-chart :yAxis = yAxis :fiveWeather = fiveWeather v-if="fiveWeather.length > 0"></bar-chart>
+            </tab>
+            <tab name="Humidity Chart">
+              <h1>Three tab</h1>
+            </tab>
+          </tabs>
+          <!-- <div><a href="https://www.wallpaperflare.com/" target="_blank">圖片來源</a></div> -->
+        </div>
       </div>
     </div>
   </div>
@@ -193,14 +195,18 @@ a {
 }
 
 .container {
-  display: flex;
-  justify-content: space-between;
   width: 100%;
   height: 100vh;
 }
 
+.container-flex {
+  display: flex;
+  justify-content: space-between;
+  height: calc(100vh - 217px);
+}
+
 .align-top {
-  margin: 4rem 0 0 4rem;
+  margin: 0 0 0 4rem;
 }
 
 .align-bottom {
@@ -223,7 +229,7 @@ a {
 
 h1 {
   margin: 0;
-  padding: 0;
+  padding: 4rem 0 0 4rem;
   font-size: 7em;
   color: #fff;
   font-weight: 300;
