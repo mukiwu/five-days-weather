@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <div :class="{ loading: isLoading }"></div>
     <div class="container cover" :class=todayWeather.weather_state_abbr>
       <div class="align-top">
         <h1>{{ city }} / {{ todayWeather.the_temp | degree}}</h1>
@@ -30,11 +31,16 @@ export default {
   name: 'App',
   data() {
     return {
+      isLoading: true,
       searchCityName: '',
       state: '',
       city: '',
       woeid: '',
-      todayWeather: [],
+      todayWeather: {
+        weather_state_abbr: 'c',
+        min_temp: '0',
+        max_temp: '0'
+      },
       fiveWeather: []
     }
   },
@@ -74,7 +80,7 @@ export default {
       const vm = this,
             api = '/api/location/search/?lattlong=' + latt + ',' + long
       vm.$http.get(api).then(res => {
-        this.city = res.data[0].title
+      this.city = res.data[0].title
         this.woeid = res.data[0].woeid
         if(this.woeid) {
           vm.showLocationWeather(this.woeid)
@@ -89,23 +95,25 @@ export default {
         this.fiveWeather = res.data.consolidated_weather
         // console.log(this.fiveWeather)
         // console.log(this.todayWeather)
+        this.isLoading = false
       })
     },
     searchCity(city) {
       const vm = this,
             api = '/api/location/search/?query=' + city
+      this.isLoading = true
       vm.$http.get(api).then(res => {
-        console.log(res.data)
         if(res.data.length > 0) {
           // console.log(res.data)
-          this.state="loading, please wait a moment..."
           this.showLocationWeather(res.data[0].woeid)
           this.city = res.data[0].title
         } else {
+          this.isLoading = false
           this.state = 'no data, please search another city.'
         }
       })
       this.searchCityName = ''
+      this.state = ''
     }
   },
   filters: {
@@ -128,6 +136,23 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-size: 16px;
   color: #2c3e50;
+}
+
+.loading {
+  position: absolute;
+  z-index: 999;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0,0,0, .8)
+}
+
+.loading::before {
+  content: 'loading...';
+  display: block;
+  color: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
 }
 
 .container {
@@ -212,7 +237,6 @@ ul.temp {
 
 .search .title {
   color: #fff;
-  font-size: .8rem;
   font-style: italic;
   text-shadow: 1px 1px 1px #000;
 }
@@ -234,6 +258,6 @@ ul.temp {
 
 .search .state {
   color: red;
-  font-size: .8rem;
+  font-size: 1rem;
 }
 </style>
