@@ -7,7 +7,14 @@
         <div class="m1"><h2>{{ todayWeather.min_temp | degree}} ~ {{ todayWeather.max_temp | degree}}</h2></div>
       </div>
       <div class="align-bottom">
-        bottom
+        <div class="card" v-for="item in fiveWeather.slice(1,6)" :key="item.id">
+          <div class="date">{{ item.applicable_date }}</div>
+          <div class="state"><img :src="'https://www.metaweather.com/static/img/weather/'+ item.weather_state_abbr + '.svg'" width="36"><br />{{ item.weather_state_name }}</div>
+          <ul class="temp">
+            <li class="min">{{ item.min_temp | degree }}</li>
+            <li class="max">{{ item.max_temp | degree }}</li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -74,20 +81,17 @@ export default {
             api = '/api/location/' + woeid + '/'
       vm.$http.get(api).then(res => {
         this.todayWeather = res.data.consolidated_weather[0]
-        // console.log(res.data)
-        console.log(this.todayWeather)
+        this.fiveWeather = res.data.consolidated_weather
+        console.log(this.fiveWeather)
+        // console.log(this.todayWeather)
       })
     }
-  },
-  computed: {
-    
   },
   filters: {
     degree: function(val) {
       return Math.round(val) + '°C'
     }
   }
-
 }
 </script>
 
@@ -112,9 +116,14 @@ body {
   height: 100vh;
 }
 
+.align-top {
+  margin: 4rem 0 0 4rem;
+}
+
 .align-bottom {
   display: flex;
   align-items: end;
+  margin: 0 4rem 4rem 0;
 }
 
 .cover {
@@ -128,7 +137,7 @@ body {
 
 h1 {
   margin: 0;
-  padding: 4rem 0 0 4rem;
+  padding: 0;
   font-size: 7em;
   color: #fff;
   font-weight: 300;
@@ -137,12 +146,40 @@ h1 {
 h2 {
   background: #333;
   color: #fff;
-  margin: 0 0 0 4rem;
-  display: inline-block;
+  margin: 0;
   padding: .5rem;
+  display: inline-block;
 }
 
 .m1 {
   margin-bottom: .5rem;
+}
+
+.card {
+  margin: 0 .5rem 8rem .5rem;
+  padding: .5rem;
+  background: rgba(255, 255, 255);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.card .date {
+  font-size: 1.2rem;
+  padding: 1rem 0 .1rem 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.card .state {
+  padding-top: .9rem;
+}
+
+ul.temp {
+  padding: 0;
+  list-style-type: none;
+}
+
+.temp .min::after {
+  content: "|";
+  display: block;
 }
 </style>
