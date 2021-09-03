@@ -26,7 +26,7 @@
               </div>
             </tab>
             <tab name="Temp Chart">
-              <bar-chart :yAxis = yAxis :fiveWeather = fiveWeather v-if="fiveWeather.length > 0"></bar-chart>
+              <bar-chart :yAxis = yAxis :rangeScale = rangeScale :fiveWeather = fiveWeather v-if="fiveWeather.length > 0"></bar-chart>
             </tab>
             <tab name="Humidity Chart">
               <h1>Three tab</h1>
@@ -148,7 +148,7 @@ export default {
       for(let i = maxNum; i > minNum; i = i - spacing) {
         this.yAxis.push(Math.floor(i))
       }
-      this.rangeScale = maxNum / minNum
+      this.rangeScale = 100 / (this.yAxis[0] - this.yAxis[4])
     }
   },
   filters: {

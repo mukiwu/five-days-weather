@@ -9,10 +9,10 @@
       </ul>
       <div class="bars">
         <div class="bar-group" v-for="item in fiveWeather.slice(1,6)" :key="item.id">
-          <div class="bar stat-1" :style="{ height: item.max_temp  + '%' }">
+          <div class="bar stat-1" :style="{ height: (item.max_temp - yAxis[4]) * rangeScale + '%' }">
             <span>{{ item.max_temp | degree }}</span>
           </div>
-          <div class="bar stat-2" :style="{ height: item.min_temp  + '%' }">
+          <div class="bar stat-2" :style="{ height: (item.min_temp - yAxis[4]) * rangeScale + '%' }">
             <span>{{ item.min_temp | degree }}</span>
           </div>
         </div>
@@ -23,12 +23,20 @@
 
 <script>
 export default {
+  data() {
+    return {
+      height: 0
+    }
+  },
   props: {
     fiveWeather: {
       type: Array
     },
     yAxis: {
       type: Array
+    },
+    rangeScale: {
+      type: Number
     }
   },
   mounted() {
@@ -113,7 +121,7 @@ export default {
 #bar-chart .x-axis li {
   float: left;
   font-size: .8rem;
-  margin: 0 2.666rem;
+  margin: 0 2.6rem;
 }
 #bar-chart .x-axis li:last-child {
   margin-right: 0;
@@ -124,9 +132,8 @@ export default {
   width: 100%;
 }
 #bar-chart .y-axis li {
-  border-top: 1px solid #4e5464;
+  border-top: 1px solid #cfcfcf;
   display: block;
-  /* height: 63.25px; */
   height: 50px;
   width: 100%;
 }
