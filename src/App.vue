@@ -14,7 +14,7 @@
       </div>
       <div class="align-bottom">
         <tabs>
-          <tab name="Forecast">
+          <tab name="Forecast" :selected="true">
             <div class="card" v-for="item in fiveWeather.slice(1,6)" :key="item.id">
               <div class="date">{{ item.applicable_date }}</div>
               <div class="state"><img :src="'https://www.metaweather.com/static/img/weather/'+ item.weather_state_abbr + '.svg'" width="36"><br />{{ item.weather_state_name }}</div>
@@ -24,14 +24,13 @@
               </ul>
             </div>
           </tab>
-          <tab name="Temp Chart" :selected="true">
-            <h1>Two tab</h1>
+          <tab name="Temp Chart">
+            <bar-chart :yAxis = yAxis :fiveWeather = fiveWeather v-if="fiveWeather.length > 0"></bar-chart>
           </tab>
           <tab name="Humidity Chart">
             <h1>Three tab</h1>
           </tab>
         </tabs>
-        
         <!-- <div><a href="https://www.wallpaperflare.com/" target="_blank">圖片來源</a></div> -->
       </div>
     </div>
@@ -41,6 +40,7 @@
 <script>
 import tabs from './components/tabs.vue'
 import tab from './components/tab.vue'
+import barChart from './components/barChart.vue'
 
 export default {
   name: 'App',
@@ -56,12 +56,15 @@ export default {
         min_temp: '0',
         max_temp: '0'
       },
-      fiveWeather: []
+      fiveWeather: [],
+      yAxis: [],
+      rangeScale: 0
     }
   },
   components: {
     'tabs': tabs,
-    'tab': tab
+    'tab': tab,
+    'bar-chart': barChart
   },
   created: function() {
     this.getLocation()
@@ -114,6 +117,7 @@ export default {
         this.fiveWeather = res.data.consolidated_weather
         // console.log(this.fiveWeather)
         // console.log(this.todayWeather)
+        vm.range()
         this.isLoading = false
       })
     },
@@ -124,6 +128,7 @@ export default {
       vm.$http.get(api).then(res => {
         if(res.data.length > 0) {
           // console.log(res.data)
+          this.yAxis = []
           this.showLocationWeather(res.data[0].woeid)
           this.city = res.data[0].title
         } else {
@@ -133,10 +138,19 @@ export default {
       })
       this.searchCityName = ''
       this.state = ''
+    },
+    range() {
+      let maxNum = Math.ceil(Math.max(...this.fiveWeather.map(p => p.max_temp))) + 5,
+          minNum = Math.floor(Math.min(...this.fiveWeather.map(p => p.min_temp))) - 5,
+          spacing = (maxNum - minNum) / 5
+      for(let i = maxNum; i > minNum; i = i - spacing) {
+        this.yAxis.push(Math.floor(i))
+      }
+      this.rangeScale = maxNum / minNum
     }
   },
   filters: {
-    degree: function(val) {
+    degree(val) {
       return Math.round(val) + '°C'
     }
   }
