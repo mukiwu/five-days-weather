@@ -29,7 +29,7 @@
               <bar-chart :yAxis = yAxis :rangeScale = rangeScale :fiveWeather = fiveWeather v-if="fiveWeather.length > 0"></bar-chart>
             </tab>
             <tab name="Humidity Chart">
-              <h1>Three tab</h1>
+              <pie-chart :fiveWeather = fiveWeather v-if="fiveWeather.length > 0"></pie-chart>
             </tab>
           </tabs>
           <!-- <div><a href="https://www.wallpaperflare.com/" target="_blank">圖片來源</a></div> -->
@@ -43,6 +43,7 @@
 import tabs from './components/tabs.vue'
 import tab from './components/tab.vue'
 import barChart from './components/barChart.vue'
+import pieChart from './components/pieChart.vue'
 
 export default {
   name: 'App',
@@ -66,7 +67,8 @@ export default {
   components: {
     'tabs': tabs,
     'tab': tab,
-    'bar-chart': barChart
+    'bar-chart': barChart,
+    'pie-chart': pieChart
   },
   created: function() {
     this.getLocation()
@@ -256,7 +258,7 @@ h2 {
 }
 
 .card .date {
-  font-size: 1.2rem;
+  font-size: 1rem;
   padding: 1rem 0 .1rem 0;
   border-bottom: 1px solid #ddd;
 }
