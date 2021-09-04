@@ -9,10 +9,10 @@
       </ul>
       <div class="bars">
         <div class="bar-group" v-for="item in fiveWeather.slice(1,6)" :key="item.id">
-          <div class="bar stat-1" :style="{ height: (item.max_temp - yAxis[4]) * rangeScale + '%' }">
+          <div class="bar stat-1" :style="{ height: (Math.ceil(item.max_temp) - yAxis[4]) * rangeScale + '%' }">
             <span>{{ item.max_temp | degree }}</span>
           </div>
-          <div class="bar stat-2" :style="{ height: (item.min_temp - yAxis[4]) * rangeScale + '%' }">
+          <div class="bar stat-2" :style="{ height: (Math.ceil(item.min_temp) - yAxis[4]) * rangeScale + '%' }">
             <span>{{ item.min_temp | degree }}</span>
           </div>
         </div>
