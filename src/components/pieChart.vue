@@ -24,7 +24,7 @@ export default {
   methods: {
     pieStyles(val) {
       return {
-        background: `conic-gradient(rgb(224, 211, 191) ${val}%, white ${100-val}%)`
+        background: `conic-gradient(rgb(224, 211, 191) ${val}%, white ${val + 1}%, white ${100 - val}%)`
       }
     }
   }
