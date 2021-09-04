@@ -10,6 +10,9 @@
           <div class="search">
             <div class="title">↓ aonther city? type and hit enter!</div>
             <input type="text" v-model="searchCityName" @keyup.enter="searchCity(searchCityName)">
+            <ul class="suggestion-list" v-if="searchCityName != ''">
+              <li v-for="item in suggestionCityList" :key="item.id"><span v-on:click="searchCity(item.title)">{{ item.title }}</span></li>
+            </ul>
             <div class="state">{{ state }}</div>
             <div class="list">
               <h3 v-if="storageCity">搜尋紀錄：</h3>
@@ -57,6 +60,7 @@ export default {
     return {
       isLoading: true,
       searchCityName: '',
+      suggestionCityList: [],
       storageCity: [],
       state: '',
       city: '',
@@ -75,11 +79,16 @@ export default {
     'tabs': tabs,
     'tab': tab,
     'bar-chart': barChart,
-    'pie-chart': pieChart
+    'pie-chart': pieChart,
   },
   created: function() {
     this.getLocation()
     this.getStorageCity()
+  },
+  watch: {
+    searchCityName() {
+      this.getSuggestionList()
+    }
   },
   methods: {
     getLocation() {
@@ -152,6 +161,16 @@ export default {
       })
       this.searchCityName = ''
       this.state = ''
+    },
+    getSuggestionList() {
+      const vm = this,
+            api = '/api/location/search/?query=' + this.searchCityName
+      if(this.searchCityName) {
+        vm.$http.get(api).then(res => {
+          this.suggestionCityList = res.data
+          // console.log(this.suggestionCityList)
+        })
+      }
     },
     range() {
       let maxNum = Math.ceil(Math.max(...this.fiveWeather.map(p => p.max_temp))) + 5,
@@ -299,6 +318,7 @@ ul.temp {
 
 .search {
   margin-top: 2rem;
+  position: relative;
 }
 
 .search .title {
@@ -341,11 +361,28 @@ ul.temp {
   padding-left: 1.5rem;
 }
 
-.list span {
+.list span, .suggestion-list span  {
   cursor: pointer;
 }
 
-.list span:hover {
+.list span:hover, .suggestion-list span:hover {
   font-weight: bold;
+}
+
+.suggestion-list {
+  position: absolute;
+  z-index: 99;
+  width: 100%;
+  background: #fff;
+  margin: 2px 0 0 0;
+  padding: .3rem 0 .5rem .5rem;
+  height: 100px;
+  overflow-y: scroll;
+}
+
+.suggestion-list li {
+  list-style: none;
+  font-size: .8rem;
+  border-bottom: 1px solid #e1e1e1;
 }
 </style>
