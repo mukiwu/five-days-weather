@@ -39,9 +39,6 @@ export default {
       type: Number
     }
   },
-  mounted() {
-    console.log('yAxis', this.yAxis)
-  },
   filters: {
     date(val) {
       return val.slice(5,10)

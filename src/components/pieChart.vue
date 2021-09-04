@@ -21,9 +21,6 @@ export default {
       type: Array
     },
   },
-  mounted() {
-    console.log(this.fiveWeather)
-  },
   methods: {
     pieStyles(val) {
       return {
