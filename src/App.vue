@@ -15,7 +15,7 @@
             </ul>
             <div class="state">{{ state }}</div>
             <div class="list">
-              <h3 v-if="storageCity">搜尋紀錄：</h3>
+              <h3 v-if="storageCity">搜尋紀錄(最多五筆)：</h3>
               <ul>
                 <li v-for="item in storageCity" :key="item.id"><span class="click" v-on:click="searchCity(item)">{{ item }}</span></li>
               </ul>
@@ -188,7 +188,10 @@ export default {
     },
     removeDuplicateCity(city) {
       this.storageCity.push(city)
-      let newData = this.storageCity.filter((item, index) => this.storageCity.indexOf(item) == index)
+      let newData = this.storageCity.filter((item, index) => {
+        this.storageCity.indexOf(item) == index
+        return item !==undefined
+      }).slice(-5)
       return newData
     }
   },
