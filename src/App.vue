@@ -11,6 +11,12 @@
             <div class="title">↓ aonther city? type and hit enter!</div>
             <input type="text" v-model="searchCityName" @keyup.enter="searchCity(searchCityName)">
             <div class="state">{{ state }}</div>
+            <div class="list">
+              <h3 v-if="storageCity">搜尋紀錄：</h3>
+              <ul>
+                <li v-for="item in storageCity" :key="item.id"><span class="click" v-on:click="searchCity(item)">{{ item }}</span></li>
+              </ul>
+            </div>
           </div>
         </div>
         <div class="align-bottom">
@@ -51,6 +57,7 @@ export default {
     return {
       isLoading: true,
       searchCityName: '',
+      storageCity: [],
       state: '',
       city: '',
       woeid: '',
@@ -61,7 +68,7 @@ export default {
       },
       fiveWeather: [],
       yAxis: [],
-      rangeScale: 0
+      rangeScale: 0,
     }
   },
   components: {
@@ -72,6 +79,7 @@ export default {
   },
   created: function() {
     this.getLocation()
+    this.getStorageCity()
   },
   methods: {
     getLocation() {
@@ -135,6 +143,8 @@ export default {
           this.yAxis = []
           this.showLocationWeather(res.data[0].woeid)
           this.city = res.data[0].title
+          localStorage.setItem('storageCity', JSON.stringify(this.removeDuplicateCity(this.city)))
+          this.getStorageCity()
         } else {
           this.isLoading = false
           this.state = 'no data, please search another city.'
@@ -151,6 +161,16 @@ export default {
         this.yAxis.push(Math.floor(i))
       }
       this.rangeScale = 100 / (this.yAxis[0] - this.yAxis[4])
+    },
+    getStorageCity() {
+      if (localStorage.getItem("storageCity") !== null) {
+        this.storageCity = JSON.parse(localStorage.getItem("storageCity"))
+      }
+    },
+    removeDuplicateCity(city) {
+      this.storageCity.push(city)
+      let newData = this.storageCity.filter((item, index) => this.storageCity.indexOf(item) == index)
+      return newData
     }
   },
   filters: {
@@ -305,5 +325,27 @@ ul.temp {
 .search .state {
   color: red;
   font-size: 1rem;
+}
+
+.list {
+  color: #f1f1f1;
+}
+
+.list h3 {
+  font-size: 1rem;
+  margin-bottom: 0;
+}
+
+.list ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.list span {
+  cursor: pointer;
+}
+
+.list span:hover {
+  font-weight: bold;
 }
 </style>
