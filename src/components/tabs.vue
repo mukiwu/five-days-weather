@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="tabs-container">
     <div class="tabs">
       <ul>
         <li v-for="tab in tabs" :key="tab.index" :class="{ 'is-active': tab.isActive }">
@@ -59,5 +59,17 @@ export default {
   margin-top: 1rem;
   width: 655px;
   height: 240px;
+}
+
+@media screen and (max-width: 768px) {
+  .tabs-container {
+    margin-right: 4rem;
+  }
+
+  .tabs-details {
+    width: 100%;
+    overflow-x: auto;
+    height: auto;
+  }
 }
 </style>

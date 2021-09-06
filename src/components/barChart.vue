@@ -56,6 +56,7 @@ export default {
   position: relative;
   background: #fff;
   border-radius: 10px;
+  overflow-x: auto;
   padding: 3rem 1rem 1rem 2rem;
 }
 #bar-chart * {
@@ -70,7 +71,8 @@ export default {
   /* padding: 0 2%; */
   padding-left: 2rem;
   position: absolute;
-  width: 100%;
+  /* width: 100%; */
+  width: 625px;
   z-index: 10;
 }
 #bar-chart .bar-group {
@@ -113,7 +115,8 @@ export default {
   bottom: 0;
   position: absolute;
   text-align: center;
-  width: 100%;
+  /* width: 100%; */
+  width: 625px;
 }
 #bar-chart .x-axis li {
   float: left;
@@ -126,7 +129,8 @@ export default {
 #bar-chart .y-axis {
   position: absolute;
   text-align: right;
-  width: 100%;
+  /* width: 100%; */
+  width: 625px;
 }
 #bar-chart .y-axis li {
   border-top: 1px solid #cfcfcf;

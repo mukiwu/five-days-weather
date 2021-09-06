@@ -337,4 +337,42 @@ ul.temp {
   font-size: .8rem;
   border-bottom: 1px solid #e1e1e1;
 }
+
+@media screen and (max-width: 1024px) {
+  .container {
+    height: auto;
+  }
+
+  .container-flex {
+    display: block;
+    height: auto;
+  }
+
+  .m1 {
+    display: inline-block;
+    margin-right: .5rem;
+  }
+
+  .search {
+    margin-top: 3rem;
+  }
+
+  .align-bottom {
+    display: block;
+    margin: 4rem 0 0 4rem;
+    padding-bottom: 4rem;
+  }
+  
+  .img-ref {
+    position: relative;
+    top: -3rem;
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  h1 {
+    font-size: 15vw;
+  }
+}
 </style>
