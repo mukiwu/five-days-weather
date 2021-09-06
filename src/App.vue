@@ -7,7 +7,8 @@
         <div class="align-top">
           <div class="m1"><h2><img :src="'https://www.metaweather.com/static/img/weather/'+ todayWeather.weather_state_abbr + '.svg'" width="24"> {{ todayWeather.weather_state_name }}</h2></div>
           <div class="m1"><h2>{{ todayWeather.min_temp | degree}} ~ {{ todayWeather.max_temp | degree}}</h2></div>
-          <div class="search">
+          <search />
+          <!-- <div class="search">
             <div class="title">↓ aonther city? type and hit enter!</div>
             <input type="text" v-model="searchCityName" @keyup.enter="searchCity(searchCityName)">
             <ul class="suggestion-list" v-if="searchCityName != ''">
@@ -20,7 +21,7 @@
                 <li v-for="item in storageCity" :key="item.id"><span class="click" v-on:click="searchCity(item)">{{ item }}</span></li>
               </ul>
             </div>
-          </div>
+          </div> -->
         </div>
         <div class="align-bottom">
           <tabs>
@@ -51,6 +52,7 @@
 <script>
 import tabs from './components/tabs.vue'
 import tab from './components/tab.vue'
+import search from './components/search.vue'
 import barChart from './components/barChart.vue'
 import pieChart from './components/pieChart.vue'
 
@@ -59,10 +61,10 @@ export default {
   data() {
     return {
       isLoading: true,
-      searchCityName: '',
-      suggestionCityList: [],
-      storageCity: [],
-      state: '',
+      // searchCityName: '',
+      // suggestionCityList: [],
+      // storageCity: [],
+      // state: '',
       city: '',
       woeid: '',
       todayWeather: {
@@ -78,18 +80,19 @@ export default {
   components: {
     'tabs': tabs,
     'tab': tab,
+    'search': search,
     'bar-chart': barChart,
     'pie-chart': pieChart,
   },
   created: function() {
     this.getLocation()
-    this.getStorageCity()
+    // this.getStorageCity()
   },
-  watch: {
-    searchCityName() {
-      this.getSuggestionList()
-    }
-  },
+  // watch: {
+  //   searchCityName() {
+  //     this.getSuggestionList()
+  //   }
+  // },
   methods: {
     getLocation() {
       if (navigator.geolocation) {
@@ -142,36 +145,6 @@ export default {
         this.isLoading = false
       })
     },
-    searchCity(city) {
-      const vm = this,
-            api = '/api/location/search/?query=' + city
-      this.isLoading = true
-      vm.$http.get(api).then(res => {
-        if(res.data.length > 0) {
-          // console.log(res.data)
-          this.yAxis = []
-          this.showLocationWeather(res.data[0].woeid)
-          this.city = res.data[0].title
-          localStorage.setItem('storageCity', JSON.stringify(this.removeDuplicateCity(this.city)))
-          this.getStorageCity()
-        } else {
-          this.isLoading = false
-          this.state = 'no data, please search another city.'
-        }
-      })
-      this.searchCityName = ''
-      this.state = ''
-    },
-    getSuggestionList() {
-      const vm = this,
-            api = '/api/location/search/?query=' + this.searchCityName
-      if(this.searchCityName) {
-        vm.$http.get(api).then(res => {
-          this.suggestionCityList = res.data
-          // console.log(this.suggestionCityList)
-        })
-      }
-    },
     range() {
       let maxNum = Math.ceil(Math.max(...this.fiveWeather.map(p => p.max_temp))) + 5,
           minNum = Math.floor(Math.min(...this.fiveWeather.map(p => p.min_temp))) - 5,
@@ -181,19 +154,6 @@ export default {
       }
       this.rangeScale = 100 / (this.yAxis[0] - this.yAxis[4])
     },
-    getStorageCity() {
-      if (localStorage.getItem("storageCity") !== null) {
-        this.storageCity = JSON.parse(localStorage.getItem("storageCity"))
-      }
-    },
-    removeDuplicateCity(city) {
-      this.storageCity.push(city)
-      let newData = this.storageCity.filter((item, index) => {
-        this.storageCity.indexOf(item) == index
-        return item !==undefined
-      }).slice(-5)
-      return newData
-    }
   },
   filters: {
     degree(val) {
