@@ -33,21 +33,36 @@ export default {
       this.getSuggestionList()
     }
   },
+  computed: {
+    city() {
+      return this.$store.state.city
+    },
+    todayWeather() {
+      return this.$store.state.todayWeather
+    },
+    isLoading() {
+      return this.$store.state.isLoading
+    }
+  },
   methods: {
     searchCity(city) {
       const vm = this,
             api = '/api/location/search/?query=' + city
-      this.isLoading = true
+      // this.isLoading = true
+      this.$store.dispatch('isLoading', true)
       vm.$http.get(api).then(res => {
         if(res.data.length > 0) {
-          console.log(res.data)
+          this.$store.dispatch('city', res.data[0].title)
+          this.$store.dispatch('showLocationWeather', res.data[0].woeid)
+          localStorage.setItem('storageCity', JSON.stringify(this.removeDuplicateCity(this.city)))
+          this.getStorageCity()
           // this.yAxis = []
           // this.showLocationWeather(res.data[0].woeid)
           // this.city = res.data[0].title
           // localStorage.setItem('storageCity', JSON.stringify(this.removeDuplicateCity(this.city)))
           // this.getStorageCity()
         } else {
-          this.isLoading = false
+          this.$store.dispatch('isLoading', false)
           this.state = 'no data, please search another city.'
         }
       })
@@ -60,7 +75,6 @@ export default {
       if(this.searchCityName) {
         vm.$http.get(api).then(res => {
           this.suggestionCityList = res.data
-          // console.log(this.suggestionCityList)
         })
       }
     },
@@ -71,11 +85,7 @@ export default {
     },
     removeDuplicateCity(city) {
       this.storageCity.push(city)
-      let newData = this.storageCity.filter((item, index) => {
-        this.storageCity.indexOf(item) == index
-        return item !==undefined
-      }).slice(-5)
-      return newData
+      return [...new Set(this.storageCity)].slice(-5)
     }
   }
 }

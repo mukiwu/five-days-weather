@@ -8,20 +8,6 @@
           <div class="m1"><h2><img :src="'https://www.metaweather.com/static/img/weather/'+ todayWeather.weather_state_abbr + '.svg'" width="24"> {{ todayWeather.weather_state_name }}</h2></div>
           <div class="m1"><h2>{{ todayWeather.min_temp | degree}} ~ {{ todayWeather.max_temp | degree}}</h2></div>
           <search />
-          <!-- <div class="search">
-            <div class="title">↓ aonther city? type and hit enter!</div>
-            <input type="text" v-model="searchCityName" @keyup.enter="searchCity(searchCityName)">
-            <ul class="suggestion-list" v-if="searchCityName != ''">
-              <li v-for="item in suggestionCityList" :key="item.id"><span v-on:click="searchCity(item.title)">{{ item.title }}</span></li>
-            </ul>
-            <div class="state">{{ state }}</div>
-            <div class="list">
-              <h3 v-if="storageCity">搜尋紀錄(最多五筆)：</h3>
-              <ul>
-                <li v-for="item in storageCity" :key="item.id"><span class="click" v-on:click="searchCity(item)">{{ item }}</span></li>
-              </ul>
-            </div>
-          </div> -->
         </div>
         <div class="align-bottom">
           <tabs>
@@ -60,19 +46,6 @@ export default {
   name: 'App',
   data() {
     return {
-      isLoading: true,
-      // searchCityName: '',
-      // suggestionCityList: [],
-      // storageCity: [],
-      // state: '',
-      city: '',
-      woeid: '',
-      todayWeather: {
-        weather_state_abbr: 'c',
-        min_temp: '0',
-        max_temp: '0'
-      },
-      fiveWeather: [],
       yAxis: [],
       rangeScale: 0,
     }
@@ -86,21 +59,39 @@ export default {
   },
   created: function() {
     this.getLocation()
-    // this.getStorageCity()
   },
-  // watch: {
-  //   searchCityName() {
-  //     this.getSuggestionList()
-  //   }
-  // },
+  watch: {
+    rangeStatus(el) {
+      if(el === true) {
+        this.range()
+      }
+    }
+  },
+  computed: {
+    city() {
+      return this.$store.state.city
+    },
+    todayWeather() {
+      return this.$store.state.todayWeather
+    },
+    fiveWeather() {
+      return this.$store.state.fiveWeather
+    },
+    isLoading() {
+      return this.$store.state.isLoading
+    },
+    rangeStatus() {
+      return this.$store.state.rangeStatus
+    }
+  },
   methods: {
     getLocation() {
       if (navigator.geolocation) {
         const vm = this
         navigator.geolocation.getCurrentPosition(function (position) {
-          let latt = position.coords.latitude,
-              long = position.coords.longitude
-          vm.showLocation(latt, long)
+          let broswerLocation = [position.coords.latitude, position.coords.longitude,]
+          vm.$store.dispatch('updateLocation', broswerLocation)
+          vm.showLocation(vm.$store.state.location[0], vm.$store.state.location[1])
         },
         function(error) {
           switch (error.code) {
@@ -126,33 +117,23 @@ export default {
       const vm = this,
             api = '/api/location/search/?lattlong=' + latt + ',' + long
       vm.$http.get(api).then(res => {
-      this.city = res.data[0].title
-        this.woeid = res.data[0].woeid
-        if(this.woeid) {
-          vm.showLocationWeather(this.woeid)
+        this.$store.dispatch('city', res.data[0].title)
+        if(res.data[0].woeid) {
+          this.$store.dispatch('showLocationWeather', res.data[0].woeid)
         }
-      })
-    },
-    showLocationWeather(woeid) {
-      const vm = this,
-            api = '/api/location/' + woeid + '/'
-      vm.$http.get(api).then(res => {
-        this.todayWeather = res.data.consolidated_weather[0]
-        this.fiveWeather = res.data.consolidated_weather
-        // console.log(this.fiveWeather)
-        // console.log(this.todayWeather)
-        vm.range()
-        this.isLoading = false
       })
     },
     range() {
       let maxNum = Math.ceil(Math.max(...this.fiveWeather.map(p => p.max_temp))) + 5,
           minNum = Math.floor(Math.min(...this.fiveWeather.map(p => p.min_temp))) - 5,
           spacing = (maxNum - minNum) / 5
+      this.yAxis = []
       for(let i = maxNum; i > minNum; i = i - spacing) {
         this.yAxis.push(Math.floor(i))
       }
+      this.yAxis = this.yAxis.slice(0, 5)
       this.rangeScale = 100 / (this.yAxis[0] - this.yAxis[4])
+      this.$store.dispatch('updateRange', false)
     },
   },
   filters: {
