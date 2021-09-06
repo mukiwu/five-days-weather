@@ -28,9 +28,9 @@
               <pie-chart :fiveWeather = fiveWeather v-if="fiveWeather.length > 0"></pie-chart>
             </tab>
           </tabs>
-          <!-- <div><a href="https://www.wallpaperflare.com/" target="_blank">圖片來源</a></div> -->
         </div>
       </div>
+      <div class="img-ref"><a href="https://www.wallpaperflare.com/" target="_blank">圖片來源</a></div>
     </div>
   </div>
 </template>
@@ -188,6 +188,14 @@ a {
   display: flex;
   justify-content: space-between;
   height: calc(100vh - 217px);
+}
+
+.img-ref {
+  position: absolute;
+  z-index: 99;
+  bottom: 1rem;
+  font-size: .9rem;
+  margin-left: 4rem;
 }
 
 .align-top {
