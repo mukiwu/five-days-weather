@@ -3,7 +3,7 @@
     <div class="tabs">
       <ul>
         <li v-for="tab in tabs" :key="tab.index" :class="{ 'is-active': tab.isActive }">
-          <a :href="tab.href" @click="selectTab(tab)">{{ tab.name }}</a>
+          <a @click="selectTab(tab)">{{ tab.name }}</a>
         </li>
       </ul>
     </div>
@@ -53,6 +53,7 @@ export default {
 
 .tabs li a {
   text-decoration: none;
+  cursor: pointer;
 }
 
 .tabs-details {
